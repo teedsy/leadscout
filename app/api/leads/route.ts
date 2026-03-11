@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
         leadCount: leads.length,
         createdAt: now,
       }
-      await db.collection('searches').insertOne(searchRecord)
+      await db.collection('searches').insertOne(searchRecord as any)
 
       // Save each lead with searchId + metadata
       const leadsToInsert: Lead[] = leads.map(lead => ({
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         industries,
         createdAt: now,
       }))
-      await db.collection('leads').insertMany(leadsToInsert)
+      await db.collection('leads').insertMany(leadsToInsert as any)
 
       console.log(`Saved search ${searchId} with ${leads.length} leads to MongoDB`)
     } catch (dbError) {
