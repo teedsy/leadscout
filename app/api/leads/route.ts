@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 8000,
-      tools: [{ type: 'web_search_20250305' as any, name: 'web_search' }],
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }] as any,
       messages: [{ role: 'user', content: prompt }],
     })
 
