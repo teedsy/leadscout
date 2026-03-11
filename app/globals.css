@@ -1,1 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --card: #1c1c1c;
+  --border: #2e2e2e;
+  --accent: #e8ff47;
+  --accent2: #ff6b35;
+  --text: #f0f0f0;
+  --muted: #666;
+  --dimmed: #444;
+  --hot: #ff6b35;
+  --warm: #e8c547;
+  --verified: #4ade80;
+  --inferred: #facc15;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Epilogue', 'Segoe UI', sans-serif;
+  min-height: 100vh;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Epilogue:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.font-syne { font-family: 'Syne', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
