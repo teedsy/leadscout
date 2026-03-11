@@ -4,7 +4,9 @@ import clientPromise from '@/lib/mongodb'
 import { Lead, LeadSearch } from '@/lib/types'
 import { randomUUID } from 'crypto'
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY!,
+})
 
 function buildPrompt(city: string, num: string, industries: string[], size: string, service: string, extra: string): string {
   return `You are a sales intelligence researcher. Use web search to find ${num} REAL local businesses in ${city} in these industries: ${industries.join(', ')}.
@@ -75,6 +77,7 @@ export async function POST(request: NextRequest) {
 
     const prompt = buildPrompt(city, num || '5', industries, size, service, extra || '')
 
+    // Call Anthropic with web search
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 8000,
@@ -82,6 +85,7 @@ export async function POST(request: NextRequest) {
       messages: [{ role: 'user', content: prompt }],
     })
 
+    // Extract text from response
     const textContent = response.content
       .filter((b): b is Anthropic.TextBlock => b.type === 'text')
       .map(b => b.text)
@@ -91,6 +95,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No response from AI' }, { status: 500 })
     }
 
+    // Parse JSON
     let leads: any[]
     try {
       const jsonMatch = textContent.match(/```json\s*([\s\S]*?)```/) || textContent.match(/(\[[\s\S]*\])/)
@@ -106,6 +111,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to parse AI response. Please try again.' }, { status: 500 })
     }
 
+    // Save to MongoDB
     const searchId = randomUUID()
     const now = new Date()
 
@@ -113,18 +119,32 @@ export async function POST(request: NextRequest) {
       const client = await clientPromise
       const db = client.db('leadscout')
 
+      // Save the search record
       const searchRecord: LeadSearch = {
-        searchId, city, industries,
-        companySize: size, aiService: service,
-        extraContext: extra || '', leadCount: leads.length, createdAt: now,
+        searchId,
+        city,
+        industries,
+        companySize: size,
+        aiService: service,
+        extraContext: extra || '',
+        leadCount: leads.length,
+        createdAt: now,
       }
       await db.collection('searches').insertOne(searchRecord)
 
-      const leadsToInsert: Lead[] = leads.map(lead => ({ ...lead, searchId, city, industries, createdAt: now }))
+      // Save each lead with searchId + metadata
+      const leadsToInsert: Lead[] = leads.map(lead => ({
+        ...lead,
+        searchId,
+        city,
+        industries,
+        createdAt: now,
+      }))
       await db.collection('leads').insertMany(leadsToInsert)
 
       console.log(`Saved search ${searchId} with ${leads.length} leads to MongoDB`)
     } catch (dbError) {
+      // Don't fail the request if DB save fails â just log it
       console.error('MongoDB save error:', dbError)
     }
 

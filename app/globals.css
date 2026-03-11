@@ -29,6 +29,7 @@ body {
 
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Epilogue:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
+/* Scanlines */
 body::after {
   content: '';
   position: fixed;
@@ -41,6 +42,7 @@ body::after {
 .font-syne { font-family: 'Syne', sans-serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
 
+/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

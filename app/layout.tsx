@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'LeadScout — AI-Powered Local Lead Intelligence',
+  title: 'LeadScout â AI-Powered Local Lead Intelligence',
   description: 'Find real local businesses and generate AI sales dossiers with cold emails.',
 }
 

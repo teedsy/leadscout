@@ -10,12 +10,14 @@ export async function GET(request: NextRequest) {
     const db = client.db('leadscout')
 
     if (searchId) {
+      // Get leads for a specific search
       const leads = await db.collection('leads')
         .find({ searchId })
         .sort({ score: -1 })
         .toArray()
       return NextResponse.json({ leads })
     } else {
+      // Get recent searches
       const searches = await db.collection('searches')
         .find({})
         .sort({ createdAt: -1 })

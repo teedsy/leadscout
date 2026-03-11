@@ -31,6 +31,7 @@ export interface Lead {
   emailSubject: string
   emailBody: string
   sourceNote: string
+  // metadata
   searchId: string
   city: string
   industries: string[]
